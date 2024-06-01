@@ -53,6 +53,21 @@ class ABB<T extends Comparable<T>> {
         this.raiz = null;
     }
 
+    esta(e: T): boolean {
+        const nodo: NodoABB<T> | null = this.raiz;
+        if(!nodo) return false;
+        return this.estaAux(nodo, e);
+    }
+
+    private estaAux(nodo: NodoABB<T> | null, e: T):boolean{
+        if(!nodo) return false;
+        if(nodo.valor.compareTo(e) === 0) return true;
+        if(e.compareTo(nodo.valor)>0) return this.estaAux(nodo.derecha, e);
+
+        return this.estaAux(nodo.izquierda, e);
+
+    }
+
     cantApariciones(e: T): number{
         const nodo: NodoABB<T> | null = this.raiz;
         let cantAp: number = 0; 
@@ -125,3 +140,4 @@ abb.insertar(new ComparableNumber(120));
 console.log(abb.raiz);
 
 console.log(abb.cantApariciones(new ComparableNumber(15))); // 1
+console.log(abb.esta(new ComparableNumber(120)));
