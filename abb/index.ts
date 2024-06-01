@@ -122,6 +122,52 @@ class ABB<T extends Comparable<T>> {
         }
     }
 
+    borrar(e: T){
+        const raiz: NodoABB<T> | null = this.raiz;
+        if(!raiz) return;
+        if(raiz.valor.compareTo(e) == 0 && !raiz.derecha && !raiz.izquierda){
+            this.raiz = null; 
+            return; 
+        }
+
+        this.borrarAux(raiz, e);
+
+    }
+
+    private encontrarMaximo(nodo: NodoABB<T> | null): NodoABB<T> | null {
+        while (nodo?.derecha) {
+            nodo = nodo.derecha;
+        }
+        return nodo;
+    }
+
+    //Nota: Es ligeramente diferente a como se usa en Java xq acá hay que ir pisando los valores de las raices, no basta con mandar el puntero a la función
+    private borrarAux(raiz: NodoABB<T> | null, e: T): NodoABB<T> | null {
+        if (!raiz) return null;
+
+        if (e.compareTo(raiz.valor) > 0) {
+            raiz.derecha = this.borrarAux(raiz.derecha, e);
+        } else if (e.compareTo(raiz.valor) < 0) {
+            raiz.izquierda = this.borrarAux(raiz.izquierda, e);
+        } else {
+            // Nodo encontrado
+            if (!raiz.izquierda && !raiz.derecha) {
+                return null; // No tiene hijos, se elimina el nodo
+            } else if (!raiz.izquierda) {
+                return raiz.derecha; // Solo tiene hijo derecho
+            } else if (!raiz.derecha) {
+                return raiz.izquierda; // Solo tiene hijo izquierdo
+            } else {
+                // Tiene ambos hijos, buscar el predecesor in-order
+                let predecesorInm = this.encontrarMaximo(raiz.izquierda);
+                raiz.valor = predecesorInm!.valor;
+                raiz.izquierda = this.borrarAux(raiz.izquierda, predecesorInm!.valor);
+            }
+        }
+
+        return raiz;
+    }
+
 }
 
 const abb: ABB<ComparableNumber> = new ABB<ComparableNumber>();
